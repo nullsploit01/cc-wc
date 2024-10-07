@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/nullsploit01/cc-wc/cmd/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,7 @@ cc-wc -c filename.txt`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			fmt.Println("Please provide a file name")
+			cmd.PrintErr("Please provide a file name")
 			return
 		}
 
@@ -33,7 +34,9 @@ cc-wc -c filename.txt`,
 			return
 		}
 
-		fmt.Println(len([]byte(file)))
+		if countBytes {
+			cmd.Println(utils.ByteCount(string(file)))
+		}
 	},
 }
 
