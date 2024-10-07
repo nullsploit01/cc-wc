@@ -13,42 +13,48 @@ var countLines bool
 
 var rootCmd = &cobra.Command{
 	Use:   "cc-wc [flags] [file]",
-	Short: "Counts the number of bytes in a file",
-	Long: `cc-wc is a simplified clone of the Unix wc (word count) tool, focusing on byte counting. 
-It can be used to quickly determine the size of a file in bytes. This tool currently supports only 
-the counting of bytes, but may be extended in the future to include word, line, and character counts. 
-For example:
+	Short: "Counts the number of bytes or lines in a file",
+	Long: `cc-wc is a simplified clone of the Unix wc (word count) tool, focusing primarily on counting bytes and lines.
+It allows you to quickly determine the size of a file in bytes or count the number of lines. 
+This tool supports counting bytes with the -c flag and lines with the -l flag. More functionalities might be added in future versions.
 
-To count the bytes in a file:
-cc-wc -c filename.txt`,
+Example:
+    cc-wc -c filename.txt  # Counts the bytes in filename.txt
+    cc-wc -l filename.txt  # Counts the lines in filename.txt`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
-			cmd.PrintErr("Please provide a file name")
+			cmd.PrintErr("Error: A file name is required as an argument.\n")
+			cmd.Usage()
 			return
 		}
 
 		file, err := os.ReadFile(args[0])
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+			cmd.PrintErrf("Error reading file: %v\n", err)
 			return
 		}
 
 		if countBytes {
-			cmd.Println(utils.ByteCount(string(file)))
+			cmd.Printf("Bytes: %d\n", utils.ByteCount(string(file)))
+		}
+
+		if countLines {
+			cmd.Printf("Lines: %d\n", utils.LineCount(string(file)))
 		}
 	},
 }
 
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Command execution error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&countBytes, "count-bytes", "c", false, "Count number of bytes in the specified file")
+	rootCmd.Flags().BoolVarP(&countBytes, "count-bytes", "c", false, "Count the number of bytes in the specified file")
+	rootCmd.Flags().BoolVarP(&countLines, "count-lines", "l", false, "Count the number of lines in the specified file")
 }
 
 func check(e error) {
