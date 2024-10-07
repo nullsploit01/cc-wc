@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 )
+
+var countBytes bool
+var countLines bool
 
 var rootCmd = &cobra.Command{
 	Use:   "cc-wc [flags] [file]",
@@ -17,7 +21,20 @@ For example:
 To count the bytes in a file:
 cc-wc -c filename.txt`,
 
-	Run: func(cmd *cobra.Command, args []string) {},
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) < 1 {
+			fmt.Println("Please provide a file name")
+			return
+		}
+
+		file, err := os.ReadFile(args[0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
+			return
+		}
+
+		fmt.Println(len([]byte(file)))
+	},
 }
 
 func Execute() {
@@ -28,5 +45,11 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("count-bytes", "c", false, "Count number of bytes in the specified file")
+	rootCmd.Flags().BoolVarP(&countBytes, "count-bytes", "c", false, "Count number of bytes in the specified file")
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
