@@ -22,12 +22,15 @@ var rootCmd = &cobra.Command{
 
 				Example:
 					cc-wc -c filename.txt  # Counts the bytes in filename.txt
-					cc-wc -l filename.txt  # Counts the lines in filename.txt`,
+					cc-wc -l filename.txt  # Counts the lines in filename.txt
+					cc-wc -w filename.txt  # Counts the words in filename.txt
+					cc-wc -m filename.txt  # Counts the characters in filename.txt
+					`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
 			cmd.PrintErr("Error: A file name is required as an argument.\n")
-			// cmd.Usage()
+			cmd.Usage()
 			return
 		}
 
