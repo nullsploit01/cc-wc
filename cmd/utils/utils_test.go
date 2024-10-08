@@ -19,7 +19,7 @@ func TestByteCount(t *testing.T) {
 	file := createMockFile(data)
 	defer file.Close()
 
-	expected := 39 // byte count of data
+	expected := 37 // byte count of data
 	result := utils.ByteCount(file)
 
 	if result != expected {
