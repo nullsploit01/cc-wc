@@ -2,29 +2,36 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
+	"io"
 	"os"
 )
 
 func ByteCount(file *os.File) int {
-	scanner := bufio.NewScanner(file)
+	defer file.Seek(0, 0)
 
-	scanner.Split(bufio.ScanLines)
+	bufferSize := 32 * 1024 // 32 KB
+	buf := make([]byte, bufferSize)
+	totalBytes := 0
 
-	byteCount := 0
-	lineCount := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		byteCount += len(line)
-		lineCount += 1
-		if scanner.Err() == nil {
-			byteCount++ // Add 1 for each newline character except possibly for the last line if it doesn't end with a newline.
+	for {
+		n, err := file.Read(buf)
+		totalBytes += n
+		if err != nil {
+			if err == io.EOF {
+				break // We reached the end of the file
+			}
+			fmt.Printf("Failed to read file: %v\n", err)
+			return -1
 		}
 	}
-	file.Seek(0, 0)
-	return byteCount + lineCount
+
+	return totalBytes
 }
 
 func LineCount(file *os.File) int {
+	defer file.Seek(0, 0)
+
 	scanner := bufio.NewScanner(file)
 
 	scanner.Split(bufio.ScanLines)
@@ -33,11 +40,13 @@ func LineCount(file *os.File) int {
 	for scanner.Scan() {
 		lineCount++
 	}
-	file.Seek(0, 0)
+
 	return lineCount
 }
 
 func WordCount(file *os.File) int {
+	defer file.Seek(0, 0)
+
 	scanner := bufio.NewScanner(file)
 
 	scanner.Split(bufio.ScanWords)
@@ -46,11 +55,13 @@ func WordCount(file *os.File) int {
 	for scanner.Scan() {
 		wordCount += 1
 	}
-	file.Seek(0, 0)
+
 	return wordCount
 }
 
 func CharacterCount(file *os.File) int {
+	defer file.Seek(0, 0)
+
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanRunes)
 
@@ -59,6 +70,6 @@ func CharacterCount(file *os.File) int {
 	for scanner.Scan() {
 		charCount++
 	}
-	file.Seek(0, 0)
+
 	return charCount
 }
