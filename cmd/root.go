@@ -16,12 +16,12 @@ var rootCmd = &cobra.Command{
 	Use:   "cc-wc [flags] [file]",
 	Short: "Counts the number of bytes or lines in a file",
 	Long: `cc-wc is a simplified clone of the Unix wc (word count) tool, focusing primarily on counting bytes and lines.
-It allows you to quickly determine the size of a file in bytes or count the number of lines. 
-This tool supports counting bytes with the -c flag and lines with the -l flag. More functionalities might be added in future versions.
+				It allows you to quickly determine the size of a file in bytes or count the number of lines. 
+				This tool supports counting bytes with the -c flag and lines with the -l flag. More functionalities might be added in future versions.
 
-Example:
-    cc-wc -c filename.txt  # Counts the bytes in filename.txt
-    cc-wc -l filename.txt  # Counts the lines in filename.txt`,
+				Example:
+					cc-wc -c filename.txt  # Counts the bytes in filename.txt
+					cc-wc -l filename.txt  # Counts the lines in filename.txt`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {

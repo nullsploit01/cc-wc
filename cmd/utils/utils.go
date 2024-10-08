@@ -2,12 +2,13 @@ package utils
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 )
 
 func ByteCount(file *os.File) int {
 	scanner := bufio.NewScanner(file)
+
+	scanner.Split(bufio.ScanLines)
 
 	byteCount := 0
 	lineCount := 0
@@ -37,13 +38,11 @@ func LineCount(file *os.File) int {
 func WordCount(file *os.File) int {
 	scanner := bufio.NewScanner(file)
 
-	scanner.Split(bufio.ScanLines)
+	scanner.Split(bufio.ScanWords)
 
-	lineCount := 0
+	wordCount := 0
 	for scanner.Scan() {
-		line := scanner.Text()
-		fmt.Println(line)
-		lineCount++
+		wordCount += 1
 	}
-	return lineCount
+	return wordCount
 }
