@@ -11,6 +11,7 @@ import (
 var countBytes bool
 var countLines bool
 var countWords bool
+var countCharacters bool
 
 var rootCmd = &cobra.Command{
 	Use:   "cc-wc [flags] [file]",
@@ -48,6 +49,10 @@ var rootCmd = &cobra.Command{
 			cmd.Printf("Words: %d\n", utils.WordCount(file))
 		}
 
+		if countCharacters {
+			cmd.Printf("Characters: %d\n", utils.CharacterCount(file))
+		}
+
 		defer file.Close()
 	},
 }
@@ -63,6 +68,7 @@ func init() {
 	rootCmd.Flags().BoolVarP(&countBytes, "count-bytes", "c", false, "Count the number of bytes in the specified file")
 	rootCmd.Flags().BoolVarP(&countLines, "count-lines", "l", false, "Count the number of lines in the specified file")
 	rootCmd.Flags().BoolVarP(&countWords, "count-words", "w", false, "Count the number of words in the specified file")
+	rootCmd.Flags().BoolVarP(&countCharacters, "count-characters", "m", false, "Count the number of characters in the specified file")
 }
 
 func check(e error) {

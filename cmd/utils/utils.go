@@ -46,3 +46,16 @@ func WordCount(file *os.File) int {
 	}
 	return wordCount
 }
+
+func CharacterCount(file *os.File) int {
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanRunes)
+
+	charCount := 0
+
+	for scanner.Scan() {
+		charCount++
+	}
+
+	return charCount
+}
