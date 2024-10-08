@@ -27,7 +27,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
 			cmd.PrintErr("Error: A file name is required as an argument.\n")
-			cmd.Usage()
+			// cmd.Usage()
 			return
 		}
 
@@ -39,18 +39,14 @@ var rootCmd = &cobra.Command{
 
 		if countBytes {
 			cmd.Printf("Bytes: %d\n", utils.ByteCount(file))
-		}
-
-		if countLines {
+		} else if countLines {
 			cmd.Printf("Lines: %d\n", utils.LineCount(file))
-		}
-
-		if countWords {
+		} else if countWords {
 			cmd.Printf("Words: %d\n", utils.WordCount(file))
-		}
-
-		if countCharacters {
+		} else if countCharacters {
 			cmd.Printf("Characters: %d\n", utils.CharacterCount(file))
+		} else {
+			cmd.Printf("%d %d %d %s\n", utils.LineCount(file), utils.WordCount(file), utils.ByteCount(file), file.Name())
 		}
 
 		defer file.Close()

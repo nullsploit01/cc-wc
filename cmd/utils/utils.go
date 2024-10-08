@@ -20,6 +20,7 @@ func ByteCount(file *os.File) int {
 			byteCount++ // Add 1 for each newline character except possibly for the last line if it doesn't end with a newline.
 		}
 	}
+	file.Seek(0, 0)
 	return byteCount + lineCount
 }
 
@@ -32,6 +33,7 @@ func LineCount(file *os.File) int {
 	for scanner.Scan() {
 		lineCount++
 	}
+	file.Seek(0, 0)
 	return lineCount
 }
 
@@ -44,6 +46,7 @@ func WordCount(file *os.File) int {
 	for scanner.Scan() {
 		wordCount += 1
 	}
+	file.Seek(0, 0)
 	return wordCount
 }
 
@@ -56,6 +59,6 @@ func CharacterCount(file *os.File) int {
 	for scanner.Scan() {
 		charCount++
 	}
-
+	file.Seek(0, 0)
 	return charCount
 }
