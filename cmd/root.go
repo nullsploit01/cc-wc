@@ -28,31 +28,42 @@ var rootCmd = &cobra.Command{
 					`,
 
 	Run: func(cmd *cobra.Command, args []string) {
+		var inputFile *os.File
+
 		if len(args) < 1 {
-			cmd.PrintErr("Error: A file name is required as an argument.\n")
-			cmd.Usage()
-			return
+			fileInfo, _ := os.Stdin.Stat()
+			if (fileInfo.Mode() & os.ModeCharDevice) == 0 {
+				inputFile = os.Stdin
+			} else {
+				cmd.PrintErr("Error: A file name is required as an argument or data must be piped.\n")
+				cmd.Usage()
+				return
+			}
 		}
 
-		file, err := os.Open(args[0])
-		if err != nil {
-			cmd.PrintErrf("Error reading file: %v\n", err)
-			return
+		if inputFile == nil {
+			file, err := os.Open(args[0])
+			if err != nil {
+				cmd.PrintErrf("Error reading file: %v\n", err)
+				return
+			}
+
+			inputFile = file
 		}
 
 		if countBytes {
-			cmd.Printf("Bytes: %d\n", utils.ByteCount(file))
+			cmd.Printf("Bytes: %d\n", utils.ByteCount(inputFile))
 		} else if countLines {
-			cmd.Printf("Lines: %d\n", utils.LineCount(file))
+			cmd.Printf("Lines: %d\n", utils.LineCount(inputFile))
 		} else if countWords {
-			cmd.Printf("Words: %d\n", utils.WordCount(file))
+			cmd.Printf("Words: %d\n", utils.WordCount(inputFile))
 		} else if countCharacters {
-			cmd.Printf("Characters: %d\n", utils.CharacterCount(file))
+			cmd.Printf("Characters: %d\n", utils.CharacterCount(inputFile))
 		} else {
-			cmd.Printf("%d %d %d %s\n", utils.LineCount(file), utils.WordCount(file), utils.ByteCount(file), file.Name())
+			cmd.Printf("%d %d %d %s\n", utils.LineCount(inputFile), utils.WordCount(inputFile), utils.ByteCount(inputFile), inputFile.Name())
 		}
 
-		defer file.Close()
+		defer inputFile.Close()
 	},
 }
 
